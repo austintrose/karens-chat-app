@@ -1,0 +1,14 @@
+{
+  "name": "KarenChatApp",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "author": "Austin Rose",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~3.5.0",
+    "gravatar": "~1.0.6",
+    "socket.io": "~0.9.16",
+    "ejs": "~0.8.5"
+  }
+}
