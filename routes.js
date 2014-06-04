@@ -55,6 +55,7 @@ module.exports = function(app,io){
         // their own unique socket object
         socket.username = data.user;
         socket.room = data.id;
+        socket.admin = data.admin;
 
         // Add the client to the room
         socket.join(data.id);
@@ -73,7 +74,7 @@ module.exports = function(app,io){
             id: data.id,
             users: usernames
           });
-        }
+        } 
 
       }
 

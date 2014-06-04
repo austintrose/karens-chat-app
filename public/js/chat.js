@@ -2,17 +2,20 @@
 
 $(function(){
 
-	// getting the id of the room from the url
+	// Getting the id of the room from the url.
 	var id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
 
-	// connect to the socket
+	// Connect to the socket.
 	var socket = io.connect('/socket');
 
-	// variables which hold the data for each person
+	// Variables which hold data about this user.
 	var name = "",
-		friend = "";
+		friend = "",
+		is_admin = false;
 
-	// cache some jQuery objects
+	// TODO: Figure out what jQuery objects you really need to cache (what still exists?)
+
+	// Cache some jQuery objects.
 	var section = $(".section"),
 		footer = $("footer"),
 		onConnect = $(".connected"),
@@ -23,7 +26,7 @@ $(function(){
 		noMessages = $(".nomessages"),
 		tooManyPeople = $(".toomanypeople");
 
-	// some more jquery objects
+	// Some more jquery objects.
 	var chatNickname = $(".nickname-chat"),
 		leftNickname = $(".nickname-left"),
 		loginForm = $(".loginForm"),
@@ -34,23 +37,22 @@ $(function(){
 		messageTimeSent = $(".timesent"),
 		chats = $(".chats");
 
-	// on connection to server get the id of person's room
+	// On connection to server send the id of the room.
 	socket.on('connect', function(){
-
 		socket.emit('load', id);
 	});
 
-	// receive the names of all people in the chat room
+	// Receive the names of all people in the chat room.
 	socket.on('peopleinchat', function(data){
-
 		if(data.number === 0){
+
+			// This user is the admin of the chatroom if there's no one else in it.
+			is_admin = true;
 
 			showMessage("connected");
 
 			loginForm.on('submit', function(e){
-
 				e.preventDefault();
-
 				name = $.trim(yourName.val());
 				
 				if(name.length < 1){
@@ -59,11 +61,10 @@ $(function(){
 				}
 
 				else {
-
 					showMessage("inviteSomebody");
 
 					// call the server-side function 'login' and send user's parameters
-					socket.emit('login', {user: name, id: id});
+					socket.emit('login', {user: name, id: id, admin: is_admin});
 				}
 			
 			});
@@ -89,8 +90,7 @@ $(function(){
 					return;
 				}
 				else{
-
-					socket.emit('login', {user: name, id: id});
+					socket.emit('login', {user: name, id: id, admin: is_admin});
 				}
 
 			});

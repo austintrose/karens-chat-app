@@ -1,24 +1,21 @@
-.outer {
-		display: table;
-		position: absolute;
-		width: 45%;
-		height: 50%;
+.hMenu
+{
+    text-align:justify;
+    width:800px;
+    margin:0 auto;
 }
 
-.middle {
-		display: table-cell;
-		vertical-align: middle;
-		width: 100%;
-		text-align: center;
+.filler 
+{
+    width:100%;
+    display: inline-block;
+    height:0px;
 }
 
-.inner {
-		margin-left: auto;
-		margin-right: auto; 
-		text-align: center;
-		width: 100%;
+.item 
+{
+    display: inline-block;
 }
-
 /*------------- Reset browser differences ------------- */
 
 
@@ -590,7 +587,7 @@ footer {
 }
 
 #message {
-	width: 550px;
+	width: 70%;
 	height: 80px;
 	display: block;
 	float:left;
@@ -606,7 +603,7 @@ footer {
 }
 
 #submit {
-	width: 110px;
+	width: 20%;
 	height: 60px;
 	float:right;
 	text-align:center;
@@ -659,7 +656,7 @@ footer {
 
 .chatscreen{
 	display:none;
-	width:700px;
+	width:80%;
 	margin: 0 auto 200px;
 	overflow:hidden;
 }
