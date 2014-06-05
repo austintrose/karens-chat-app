@@ -1,0 +1,31 @@
+var room_id;
+
+socket.on('connect', function(){
+  room_id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
+  socket.emit('load', {
+    room_id: room_id,
+  });
+});
+
+Client:
+
+  on: 'connect',
+  emit: 'load',
+  {
+    room_id: ID_OF_ROOM,
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  on: 'people_in_chat',
+  emit:

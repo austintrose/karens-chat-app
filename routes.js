@@ -2,109 +2,118 @@
 // for the two main URL endpoints of the application - /create and /chat/:id
 // and listens for socket.io messages.
 
+var room_control_grants = {};
+
 // Export a function, so that we can pass 
 // the app and io instances from the app.js file:
 module.exports = function(app,io){
 
-  // Render views/home.html
-  app.get('/', function(req,res){
-    res.render('home'); 
-  });
+	// Render views/home.html
+	app.get('/', function(req,res){
+		res.render('home'); 
+	});
 
-  // Redirect to a random room
-  app.get('/create', function(req,res){
-    var id = Math.round((Math.random() * 1000000));
-    res.redirect('/chat/'+id);
-  });
+	// Redirect to a random room
+	app.get('/create', function(req,res){
+		var id = Math.round((Math.random() * 1000000));
+		res.redirect('/chat/'+id);
+	});
 
-  // Render views/chat.html
-  app.get('/chat/:id', function(req,res){
-    res.render('chat');
-  });
+	// Render views/chat.html
+	app.get('/chat/:id', function(req,res){
+		res.render('chat');
+	});
 
-  // Initialize a new socket.io application, named 'chat'
-  var chat = io.of('/socket').on('connection', function (socket) {
+	// Initialize a new socket.io application, named 'chat'
+	var chat = io.of('/socket').on('connection', function (socket) {
 
-    // When the client emits the 'load' event, reply with the 
-    // number of people in this chat room
-    socket.on('load',function(data){
-      if(chat.clients(data).length === 0 ) {
-        socket.emit('peopleinchat', {number: 0});
-      }
+		socket.on('load',function(data){
+			if(chat.clients(data.room_id).length === 0 ) {
+				socket.emit('people_in_chat', {
+					how_many_in_room: 0,
+				});
+			}
 
-      else if(chat.clients(data).length === 1) {
-        socket.emit('peopleinchat', {
-          number: 1,
-          user: chat.clients(data)[0].username,
-          id: data
-        });
-      }
+			else if(chat.clients(data.room_id).length === 1) {
+				socket.emit('people_in_chat', {
+					how_many_in_room: 1,
+					username: chat.clients(data.room_id)[0].username,
+				});
+			}
 
-      else if(chat.clients(data).length >= 2) {
-        chat.emit('tooMany', {boolean: true});
-      }
-    });
+			else if(chat.clients(data.room_id).length >= 2) {
+				socket.emit('too_many_people', {
+					room_has_too_many: true,
+				});
+			}
+		});
 
-    // When the client emits 'login', save his name and add it to the room
-    socket.on('login', function(data) {
+		socket.on('login', function(data) {
+			if(chat.clients(data.room_id).length < 2) {
+				socket.username = data.username;
+				socket.room_id = data.room_id;
 
-      // Only two people per room are allowed
-      if(chat.clients(data.id).length < 2){
+				room_control_grants[data.room_id] = data.grants_face_controls;
 
-        // Use the socket object to store data. Each client gets
-        // their own unique socket object
-        socket.username = data.user;
-        socket.room = data.id;
-        socket.admin = data.admin;
+				socket.join(data.room_id);
 
-        // Add the client to the room
-        socket.join(data.id);
+				if(chat.clients(data.room_id).length == 2) {
 
-        if(chat.clients(data.id).length == 2) {
+					var usernames = [];
+					usernames.push(chat.clients(data.room_id)[0].username);
+					usernames.push(chat.clients(data.room_id)[1].username);
 
-          var usernames = [];
+					chat.in(data.room_id).emit('start_chat', {
+						room_id: data.room_id,
+						users: usernames,
+					});
 
-          usernames.push(chat.clients(data.id)[0].username);
-          usernames.push(chat.clients(data.id)[1].username);
+					if (room_control_grants[data.room_id]) {
+						chat.in(data.room_id).emit('get_face_controls', {});
+					}
+				} 
 
-          // Send the startChat event to all the people in the
-          // room, along with a list of people that are in it.
-          chat.in(data.id).emit('startChat', {
-            boolean: true,
-            id: data.id,
-            users: usernames
-          });
-        } 
+			} 
 
-      }
+			else {
+				socket.emit('too_many_people', {
+					room_has_too_many: true,
+				});
+			}
+		});
 
-      else {
-        socket.emit('tooMany', {boolean: true});
-      }
-    });
+		// Somebody left the chat
+		socket.on('disconnect', function() {
 
-    // Somebody left the chat
-    socket.on('disconnect', function() {
+			// Notify the other person in the chat room
+			// that his partner has left
 
-      // Notify the other person in the chat room
-      // that his partner has left
+			socket.broadcast.to(this.room_id).emit('leave', {
+				boolean: true,
+				room_id: this.room_id,
+				username: this.username
+			});
 
-      socket.broadcast.to(this.room).emit('leave', {
-        boolean: true,
-        room: this.room,
-        user: this.username
-      });
-
-      // leave the room
-      socket.leave(socket.room);
-    });
+			// leave the room
+			socket.leave(socket.room_id);
+		});
 
 
-    // Handle the sending of messages
-    socket.on('msg', function(data){
+		// Handle the sending of messages
+		socket.on('msg', function(data){
 
-      // When the server receives a message, it sends it to the other person in the room.
-      socket.broadcast.to(socket.room).emit('receive', {msg: data.msg, user: data.user});
-    });
-  });
+			// When the server receives a message, it sends it to the other person in the room.
+			socket.broadcast.to(socket.room_id).emit('receive', {msg: data.msg, username: data.username});
+		});
+
+		socket.on('grant_face_controls', function() {
+			socket.broadcast.to(socket.room_id).emit('get_face_controls', {});
+		})
+	});
 };
+
+// TODO: Make sure logs are separated by chat room. 
+function writeLogObject(obj) {
+
+}
+

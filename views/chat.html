@@ -17,90 +17,79 @@
 <body>
 
 	<div style="width: 50%; float: left">
-		<section class="section">
 
-			<!-- These elements are displayed as white info cards in the middle of the screen -->
+		<!-- These elements are displayed as white info cards in the middle of the screen -->
 
-			<div class="connected">
+		<div class="connected">
+			<h2>What is your name?</h2>
+			<br/>
+			<form class="loginForm">
+				<input type="text" id="yourName" value="Karen" />
+				<br />
+				<input type="submit" id="yourEnter" value="ENTER" />
+				<br />
+				<input type="checkbox" value="None" id="otherUserControl" name="check" />
+				<label id="otherUserControlLabel">Other use has face-display controls as well.</label>
+			</form>
+		</div>
 
-				<img src="../img/unnamed.jpg" id="creatorImage" />
+		<div class="personinside">
+			<h2>Chat with <span class="nickname-chat"></span></h2>
+			<br/>
+			<form class="loginForm">
+				<input type="text" id="hisName" placeholder="Your nick name" />
+				<br/>
+				<input type="submit" id="hisEnter" value="CHAT" />
+				<br/>
+			</form>
+		</div>
 
-				<div class="infoConnected">
-					<h2>Who are you?</h2>
-					<br/>
+		<div class="invite-textfield">
 
-					<form class="loginForm">
-						<input type="text" id="yourName" placeholder="Your nick name" /><br/>
-						<input type="submit" id="yourEnter" value="ENTER" />
-					</form>
+			<h2>Oops, there are no other people in this chat!</h2>
+			<h5>Invite a friend by sending them this URL</h5>
 
-				</div>
+			<div class="link">
+				<a title="Invite a friend" href="" id="link"></a>
 			</div>
+		</div>
 
-			<div class="personinside">
+		<div class="left">
 
-				<img src="../img/unnamed.jpg" id="ownerImage" />
+			<img src="../img/unnamed.jpg" id="leftImage" />
 
-				<div class="infoInside">
-					<h2>Chat with <span class="nickname-chat"></span></h2>
-					<br/>
-
-					<form class="loginForm">
-						<input type="text" id="hisName" placeholder="Your nick name" /><br/>
-						<input type="submit" id="hisEnter" value="CHAT" />
-					</form>
-
-				</div>
+			<div class="info">
+				<h2><span class="nickname-left"></span> has left this chat.</h2>
+				<h5>Invite somebody else by sending them this page.</h5>
 			</div>
+		</div>
 
-			<div class="invite-textfield">
+		<div class="toomanypeople">
 
-				<h2>Oops, there are no other people in this chat!</h2>
-				<h5>Invite a friend by sending them this URL</h5>
+			<h2>Oops, you can not join this chat!</h2>
+			<h5>There are already two people in it. Would you like to create a <a title="New Room" href="/create" id="room">new room</a>?</h5>
+		</div>
 
-				<div class="link">
-					<a title="Invite a friend" href="" id="link"></a>
-				</div>
+		<div class="nomessages">
+
+			<img src="../img/unnamed.jpg" id="noMessagesImage" />
+
+			<div class="info">
+				<h2>You are chatting with <span class="nickname-chat"></span>.</h2>
+				<h5>Send them a message from the form below!</h5>
 			</div>
+		</div>
 
-			<div class="left">
+		<div class="chatscreen">
+			<ul class="chats">
+				<!-- The chat messages will go here -->
+			</ul>
+		</div>
 
-				<img src="../img/unnamed.jpg" id="leftImage" />
-
-				<div class="info">
-					<h2><span class="nickname-left"></span> has left this chat.</h2>
-					<h5>Invite somebody else by sending them this page.</h5>
-				</div>
-			</div>
-
-			<div class="toomanypeople">
-
-				<h2>Oops, you can not join this chat!</h2>
-				<h5>There are already two people in it. Would you like to create a <a title="New Room" href="/create" id="room">new room</a>?</h5>
-			</div>
-
-			<div class="nomessages">
-
-				<img src="../img/unnamed.jpg" id="noMessagesImage" />
-
-				<div class="info">
-					<h2>You are chatting with <span class="nickname-chat"></span>.</h2>
-					<h5>Send them a message from the form below!</h5>
-				</div>
-			</div>
-
-			<div class="chatscreen">
-
-				<ul class="chats">
-					<!-- The chat messages will go here -->
-				</ul>
-			</div>
-
-		</section>
 	</div>
 
-	<div style="width: 50%; float: right;">
-		<img src="../img/nodejslogo1.png">
+	<div style="width: 50%; float: right; text-align: center;">
+		<img src="../img/thumb.png">
 	</div>
 
 	<footer>
@@ -108,17 +97,27 @@
 			<textarea id="message" placeholder="Write something.."></textarea>
 			<input type="submit" id="submit" value="SEND"/>
 		</form>
-		<div class="hMenu" style="width: 50%;float:right;">
+
+		<div class="face-buttons" style="width: 50%;float:right;" hidden>
 			<ul>
 				<li class="item">&nbsp;</li>
-				<li class="item">Menu Item 1</li>
-				<li class="item">Menu Item 2</li>
-				<li class="item">Menu Item 3</li>
-				<li class="item">Menu Item 4</li>
+				<li class="item button"><img src="../img/thumb.png"></li>
+				<li class="item button"><img src="../img/thumb.png"></li>
+				<li class="item button"><img src="../img/thumb.png"></li>
+				<li class="item button"><img src="../img/thumb.png"></li>
+				<li class="item button"><img src="../img/thumb.png"></li>
+				<li class="item button"><img src="../img/thumb.png"></li>
+				<li class="item">&nbsp;</li>
+				<li class="filler"></li>
+			</ul>
+			<ul>
+				<li class="item">&nbsp;</li>
+				<li class="item">Select a face to display</li>
 				<li class="item">&nbsp;</li>
 				<li class="filler"></li>
 			</ul>
 		</div>
+
 	</footer>
 
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
