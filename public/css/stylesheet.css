@@ -19,6 +19,14 @@ body {
 }
 
 
+/* ------------ Face images ------------- */
+#yourFace img,
+#theirFace img
+{
+	display: block;
+	margin: 5px auto;
+	clear: both;
+}
 
 /* ------------ Face changing buttons ------------ */
 .face-buttons
@@ -43,15 +51,15 @@ body {
 .item.button.active,
 .item.button:hover
 {
-	-moz-box-shadow:    0 0 5px 5px #ddd;
-	-webkit-box-shadow: 0 0 5px 5px #ddd;
-	box-shadow:         0 0 5px 5px #ddd;
+	-moz-box-shadow:    0 0 5px 5px #aaa;
+	-webkit-box-shadow: 0 0 5px 5px #aaa;
+	box-shadow:         0 0 5px 5px #aaa;
 }
 
 .item.button {
-	-moz-box-shadow:    0 0 5px 5px #eee;
-	-webkit-box-shadow: 0 0 5px 5px #eee;
-	box-shadow:         0 0 5px 5px #eee;
+	-moz-box-shadow:    0 0 5px 5px #ddd;
+	-webkit-box-shadow: 0 0 5px 5px #ddd;
+	box-shadow:         0 0 5px 5px #ddd;
 }
 
 /* ------------ Header styles ------------ */

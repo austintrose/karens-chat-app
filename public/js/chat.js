@@ -125,8 +125,13 @@ $(function(){
       // If granting controls, broadcast a grant.
       if (grants_face_controls) {
         socket.emit('grant_face_controls', {});
+        $('#client_title').html(data.users[1]);
+        $('#clientFace').show();
       }
     }
+
+    $('#host_title').html(data.users[0]);
+    $('.face-images').show();
   })
 
   socket.on('leave',function(data){
@@ -158,6 +163,10 @@ $(function(){
 
   socket.on('get_face_controls', function(){
     $('.face-buttons').show();
+    $('#client_title').html(username);
+    $('#clientFace').show();
+
+    $('.face-buttons')
   });
 
   textarea.keypress(function(e){
@@ -234,16 +243,14 @@ $(function(){
     messageTimeSent.last().text(now.fromNow());
   }
 
-  // Update the active image icon.
-  // Update the large your-image.
-  // Emit the image_id on the socket.
-  function sendImage(image_id) {
-
+  function setHostImage(image_id) {
+    $('img.host_image').hide();
+    $('img#host_image_' + image_id).show();
   }
 
-  // Update the large their-image.
-  function receiveImage(image_id) {
-
+  function setClientImage(image_id) {
+    $('img.client_image').hide();
+    $('img#client_image_' + image_id).show();
   }
 
   function scrollToBottom(){
