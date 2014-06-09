@@ -28,16 +28,18 @@ module.exports = function(app,io){
 	var chat = io.of('/socket').on('connection', function (socket) {
 
 		socket.on('load',function(data){
+
 			if(chat.clients(data.room_id).length === 0 ) {
-				socket.emit('people_in_chat', {
+				socket.emit('ok_to_login', {
+					admin: true,
 					how_many_in_room: 0,
 				});
 			}
 
 			else if(chat.clients(data.room_id).length === 1) {
-				socket.emit('people_in_chat', {
-					how_many_in_room: 1,
-					username: chat.clients(data.room_id)[0].username,
+				socket.emit('ok_to_login', {
+					admin: false,
+					host_name: chat.clients(data.room_id)[0].username,
 				});
 			}
 

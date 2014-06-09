@@ -11,32 +11,10 @@ $(function(){
   // Variables which hold data about this user.
   var room_id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
   var username;
-  var has_face_controls = false;
-  var grants_face_controls = false;
+  var has_face_controls
 
-  // TODO: Figure out what jQuery objects you really need to cache (what still exists?)
   // Cache some jQuery objects.
-  var section = $(".section"),
-    footer = $("footer"),
-    onConnect = $(".connected"),
-    inviteSomebody = $(".invite-textfield"),
-    personInside = $(".personinside"),
-    chatScreen = $(".chatscreen"),
-    left = $(".left"),
-    noMessages = $(".nomessages"),
-    tooManyPeople = $(".toomanypeople");
-
-  // Some more jquery objects.
-  var chatNickname = $(".nickname-chat"),
-    leftNickname = $(".nickname-left"),
-    loginForm = $(".loginForm"),
-    yourName = $("#yourName"),
-    controlCheckbox = $("#otherUserControl"),
-    hisName = $("#hisName"),
-    chatForm = $("#chatform"),
-    textarea = $("#message"),
-    messageTimeSent = $(".timesent"),
-    chats = $(".chats");
+  // var section = $(".section");
 
   // On connection to server send the id of the room.
   socket.on('connect', function(){
@@ -45,12 +23,11 @@ $(function(){
     });
   });
 
-  socket.on('people_in_chat', function(data){
+  socket.on('ok_to_login', function(data){
 
     // If this user is creating the room.
     if(data.how_many_in_room === 0){
 
-      has_face_controls = true;
       showMessage("connected");
 
       loginForm.on('submit', function(e) {

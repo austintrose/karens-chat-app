@@ -7,14 +7,77 @@
 -->
 
 <html>
-
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+
 	<title>Chat Room</title>
-	<link type="text/css" rel="stylesheet" href="../css/stylesheet.css" />
-	<link href="http://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
+
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/stylesheet.css">
+
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 </head>
 
 <body>
+
+	<!-- <div id="open-chat-form-div" class="row clearfix">
+		<div class="col-md-3 column">
+		</div>
+		<div class="col-md-3 column">
+			<form id="open-chat-form" role="form">
+				<div class="form-group">
+					<h3 for="name">What's your name?</h3>
+					<input type="text" class="form-control" id="name" value="Karen"/>
+				</div>
+				<div class="checkbox">
+					<h3><input type="checkbox" />Other user has face-display controls as well.</h3>
+				</div> 
+				<button type="submit" class="btn btn-default">Open chat room.</button>
+			</form>
+		</div>
+		<div class="col-md-3 column">
+		</div>
+		<div class="col-md-3 column">
+		</div>
+	</div> -->
+
+	<div id="invite-to-chat-form-div" class="row clearfix">
+		<div class="col-md-2 column">
+		</div>
+		<div class="col-md-4 column">
+			<form id="open-chat-form" role="form">
+				<div class="form-group">
+					<h3 for="name">Invite people to chat by sending them this URL.</h3>
+					<a href="">`URL`</a>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-4 column">
+		</div>
+		<div class="col-md-2 column">
+		</div>
+	</div>
+
+	<!-- <div id="join-chat-form-div" class="row clearfix">
+		<div class="col-md-3 column">
+		</div>
+		<div class="col-md-3 column">
+			<form id="join-chat-form" role="form">
+				<div class="form-group">
+					<label for="name">What's your name?</label>
+					<input type="text" class="form-control" id="name" value="Karen"/>
+				</div>
+				<button type="submit" class="btn btn-default">Chat with `HOST`</button>
+			</form>
+		</div>
+		<div class="col-md-3 column">
+		</div>
+		<div class="col-md-3 column">
+		</div>
+	</div> -->
 
 	<div style="width: 50%; float: left">
 
@@ -111,29 +174,26 @@
 	</div>
 
 	<footer>
-		<form id="chatform" style="margin:0 5% 0; width:40%; float:left;">
-			<textarea id="message" placeholder="Write something.."></textarea>
-			<input type="submit" id="submit" value="SEND"/>
-		</form>
 
-		<div class="face-buttons" style="width: 50%;float:right;" hidden>
-			<ul>
-				<li class="item">&nbsp;</li>
-				<li id="face-button-1" class="item button active"><img src="../img/thumb.png"></li>
-				<li id="face-button-2" class="item button"><img src="../img/thumb.png"></li>
-				<li id="face-button-3" class="item button"><img src="../img/thumb.png"></li>
-				<li id="face-button-4" class="item button"><img src="../img/thumb.png"></li>
-				<li id="face-button-5" class="item button"><img src="../img/thumb.png"></li>
-				<li id="face-button-6" class="item button"><img src="../img/thumb.png"></li>
-				<li class="item">&nbsp;</li>
-				<li class="filler"></li>
-			</ul>
-			<ul>
-				<li class="item">&nbsp;</li>
-				<li class="item">Select a face to display</li>
-				<li class="item">&nbsp;</li>
-				<li class="filler"></li>
-			</ul>
+		<div class="row clearfix">
+			<div class="col-md-1 column">
+			</div>
+			<div class="col-md-5 column">
+				<form role="form" class="form-inline">
+					<div class="row">
+						<div class="col-xs-9">
+							<input type="text" class="form-control">
+						</div>
+						<div class="col-xs-3">
+							<button type="submit" class="btn btn-primary btn-block">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="col-md-5 column">
+			</div>
+			<div class="col-md-1 column">
+			</div>
 		</div>
 
 	</footer>
