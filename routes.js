@@ -93,9 +93,6 @@ module.exports = function(app,io){
 				room_id: this.room_id,
 				username: this.username
 			});
-
-			// leave the room
-			socket.leave(socket.room_id);
 		});
 
 
