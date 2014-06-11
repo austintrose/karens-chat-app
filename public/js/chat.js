@@ -3,20 +3,29 @@
 $(function(){
 
   // Getting the id of the room from the url.
-  var id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
+  var room_id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
 
   // Connect to the socket.
   var socket = io.connect('/socket');
-
-  // This chat room's id
-  var room_id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
 
   // Variables which hold data about this user.
   var username;
   var is_host;
   var controls_allowed;
 
-  // TODO Cache some jQuery objects.
+  // Cache some jQuery objects.
+  var host_form = $('#host-form');
+  var host_name = $('#host-name');
+  var allow_face_controls = $('#allow-face-controls');
+  var client_form = $('#client-form');
+  var client_name = $('#client-name');
+  var client_face = $('#client-face');
+  var face_controls = $('#face-controls');
+  var chat_field = $('#chat-field');
+  var chat_form = $('#chat-form');
+  var start_new_chat = $('#start-new-chat');
+  var invite_link = $("#invite-link");
+  var invite_to_chat = $('#invite-to-chat');
 
   // On connection to server send the id of the room.
   socket.on('connect', function(){
@@ -31,19 +40,28 @@ $(function(){
 
     // This user is the host.
     if(is_host) {
-      showMessage("start-new-chat");
 
-      $('#host-form').on('submit', function(e) {
+      start_new_chat.fadeIn(600);
+
+      host_form.on('submit', function(e) {
         e.preventDefault();
-        username = $.trim($('#host-name').val());
-        controls_allowed = $('#allow-face-controls').is(':checked');
+        username = $.trim(host_name.val());
+        controls_allowed = allow_face_controls.is(':checked');
 
         if (username.length < 1) {
           alert("Please enter a nick name longer than 1 character!");
           return;
         }
         else {
-          showMessage("invite-to-chat");
+
+          // Set the invite link content
+          invite_link.text(window.location.href);
+          invite_link.attr('href', window.location.href);
+
+          start_new_chat.fadeOut(600, function(){
+            invite_to_chat.fadeIn(600);
+          });
+
           socket.emit('login', {
             username: username, 
             room_id: room_id,
@@ -55,12 +73,15 @@ $(function(){
 
     // This user is the client.
     else {
-      showMessage("join-chat",data);
+
+      $('#join-chat-button').text("Chat with " + data.host_name);
+      $('#join-chat').fadeIn(600);
+
       controls_allowed = data.controls_allowed;
 
-      $('#client-form').on('submit', function(e) {
+      client_form.on('submit', function(e) {
         e.preventDefault();
-        username = $.trim($('#client-name').val());
+        username = $.trim(client_name.val());
 
         if (username.length < 1) {
           alert("Please enter a nick name longer than 1 character!");
@@ -86,60 +107,61 @@ $(function(){
     if(data.room_id == room_id) {
 
       if (is_host || controls_allowed) {
-        $('#face-controls').show();
+        face_controls.show();
         // TODO: Function for each face control.
         // WITH THE IDs YOU JUST GAVE THE BUTTONS
       }
 
       if (controls_allowed) {
-        $('#client-face').show();
+        client_face.show();
       }
 
-      showMessage("chat", data);
+      $('#host-name-title').text(data.host);
+      $('#client-name-title').text(data.client);
+
+      var callback = function() {
+        $('#chat').fadeIn(600);
+        $('#footer').fadeIn(600);
+      }
+
+      if (is_host) {
+        invite_to_chat.fadeOut(600, callback);
+      } else {
+        $('#join-chat').fadeOut(600, callback);
+      }
     }
   })
 
   socket.on('leave',function(data){
-
-    if(data.boolean && id==data.room){
-
-      showMessage("somebodyLeft", data);
-      $('#messages').empty();
-    }
-
+    // TODO: Something?
   });
 
   socket.on('too_many_people', function(data){
-    alert('too many');
+    // TODO: Something?
   });
 
   socket.on('receive', function(data){
-
-      showMessage('chatStarted');
-
-      createChatMessage(data.msg, data.username, moment());
-      scrollToBottom();
-      noMessages.hide();
+    createChatMessage(data.msg, data.username, moment());
+    scrollToBottom();
   });
 
-  $('#chat-field').keypress(function(e){
+  chat_field.keypress(function(e){
     if(e.which == 13) {
       e.preventDefault();
-      $('#chat-form').trigger('submit');
+      chat_form.trigger('submit');
     }
   });
 
-  $('#chat-form').on('submit', function(e){
-
+  chat_form.on('submit', function(e){
     e.preventDefault();
-    if ($('#chat-field').val().trim().length > 0) {
-      createChatMessage($('#chat-field').val(), username, moment());
+    if (chat_field.val().trim().length > 0) {
+      createChatMessage(chat_field.val(), username, moment());
       scrollToBottom();
 
       // Send the message to the other person in the chat
-      socket.emit('msg', {msg: $('#chat-field').val(), username: username});
+      socket.emit('msg', {msg: chat_field.val(), username: username});
 
-      $('#chat-field').val("");
+      chat_field.val("");
     }
   });
 
@@ -186,72 +208,8 @@ $(function(){
     messageTimeSent.last().text(now.fromNow());
   }
 
-  function setHostImage(image_id) {
-    $('img.host_image').hide();
-    $('img#host_image_' + image_id).show();
-  }
-
-  function setClientImage(image_id) {
-    $('img.client_image').hide();
-    $('img#client_image_' + image_id).show();
-  }
-
   function scrollToBottom(){
     $("html, body").animate({ scrollTop: $(document).height()-$(window).height()+500 },100);
-  }
-
-  function showMessage(status,data){
-
-    if(status === "start-new-chat"){
-      $('#start-new-chat').fadeIn(600);
-    }
-
-    else if(status === "invite-to-chat"){
-      // Set the invite link content
-      $("#invite-link").text(window.location.href);
-      $("#invite-link").attr('href', window.location.href);
-
-      $('#start-new-chat').fadeOut(600, function(){
-        $('#invite-to-chat').fadeIn(600);
-      });
-    }
-
-    else if(status === "join-chat"){
-      $('#join-chat-button').text("Chat with " + data.host_name);
-      $('#join-chat').fadeIn(600);
-    }
-
-    else if(status === "chat"){
-      $('#host-name-title').text(data.host);
-      $('#client-name-title').text(data.client);
-
-      var callback = function() {
-        $('#chat').fadeIn(600);
-        $('#footer').fadeIn(600);
-      }
-
-      if (is_host) {
-        $('#invite-to-chat').fadeOut(600, callback);
-      } else {
-        $('#join-chat').fadeOut(600, callback);
-      }
-
-    }
-
-    else if(status === "somebodyLeft"){
-
-      leftNickname.text(data.username);
-
-      section.children().css('display','none');
-      footer.css('display', 'none');
-      left.fadeIn(1200);
-    }
-
-    else if(status === "tooManyPeople") {
-
-      section.children().css('display', 'none');
-      tooManyPeople.fadeIn(1200);
-    }
   }
 
 });
