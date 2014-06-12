@@ -126,12 +126,39 @@ $(function(){
       if (is_host || controls_allowed) {
         face_controls.show();
         face_controls.find('button').click(function(event) {
+          face_controls.find('button').removeClass('active');
+          $(this).addClass('active');
           var id = $(this).attr('id');
           socket.emit('face_change', {
             id: id,
             is_host: is_host
           });
         });
+
+        $(document).bind('keydown', 'ctrl+1', function(){
+          $('button#1').trigger('click');
+        });  
+
+        $(document).bind('keydown', 'ctrl+2', function(){
+          $('button#2').trigger('click');
+        });  
+
+        $(document).bind('keydown', 'ctrl+3', function(){
+          $('button#3').trigger('click');
+        });  
+
+        $(document).bind('keydown', 'ctrl+4', function(){
+          $('button#4').trigger('click');
+        });  
+
+        $(document).bind('keydown', 'ctrl+5', function(){
+          $('button#5').trigger('click');
+        });  
+
+        $(document).bind('keydown', 'ctrl+6', function(){
+          $('button#6').trigger('click');
+        });  
+
       }
 
       if (controls_allowed) {

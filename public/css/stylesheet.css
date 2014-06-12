@@ -127,3 +127,6 @@ div.center {
 	right: 8%;
 }
 
+button .active {
+	background-color: #ddd;
+}
