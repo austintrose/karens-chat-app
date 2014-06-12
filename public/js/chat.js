@@ -197,7 +197,7 @@ $(function(){
 
   setInterval(function(){
 
-    messageTimeSent.each(function(){
+    $('.timesent').each(function(){
       var each = moment($(this).data('time'));
       $(this).text(each.fromNow());
     });
@@ -232,8 +232,7 @@ $(function(){
 
     $('#messages').append(li);
 
-    messageTimeSent = $(".timesent");
-    messageTimeSent.last().text(now.fromNow());
+    $(".timesent").last().text(now.fromNow());
   }
 
   function scrollToBottom(){
