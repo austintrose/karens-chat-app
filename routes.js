@@ -1,7 +1,3 @@
-// This file is required by app.js. It sets up event listeners
-// for the two main URL endpoints of the application - /create and /chat/:id
-// and listens for socket.io messages.
-
 // Export a function, so that we can pass 
 // the app and io instances from the app.js file:
 module.exports = function(app,io){
@@ -22,12 +18,13 @@ module.exports = function(app,io){
 		res.render('chat');
 	});
 
-	// Initialize a new socket.io application, named 'chat'
+	// Initialize a new socket.io application, named 'chat'.
 	var chat = io.of('/socket').on('connection', function (socket) {
 
-		// Somebody has connected to the room
+		// Somebody has connected to the room.
 		socket.on('load',function(data){
 
+			// Respond allowning the host to login.
 			if(chat.clients(data.room_id).length === 0 ) {
 				socket.emit('ok_to_login', {
 					host: true,
@@ -35,6 +32,7 @@ module.exports = function(app,io){
 				});
 			}
 
+			// Respond allowing the client to login.
 			else if(chat.clients(data.room_id).length === 1) {
 				socket.emit('ok_to_login', {
 					host: false,
@@ -43,36 +41,46 @@ module.exports = function(app,io){
 				});
 			}
 
-			else if(chat.clients(data.room_id).length >= 2) {
+			// Deny the connection.
+			else {
 				socket.emit('too_many_people', {
 					room_has_too_many: true,
 				});
 			}
 		});
 
-		// Somebody is attempting to log into the room
+		// Somebody is attempting to log into the room.
 		socket.on('login', function(data) {
+
+			// Make sure the room isn't full.
 			if(chat.clients(data.room_id).length < 2) {
 
+				// This socket is unique per user - assign some data about them.
 				socket.username = data.username;
 				socket.room_id = data.room_id;
-
 				socket.join(data.room_id);
 
+				// The host just logged in.
 				if(chat.clients(data.room_id).length == 1) {
 					socket.controls_allowed = data.controls_allowed;
 				}
 
+				// The client just logged in.
 				if(chat.clients(data.room_id).length == 2) {
 					var usernames = [];
 					usernames.push(chat.clients(data.room_id)[0].username);
 					usernames.push(chat.clients(data.room_id)[1].username);
 
-					chat.in(data.room_id).emit('start_chat', {
+					var data = {
+						type: 'start_chat',
 						host: usernames[0],
 						client: usernames[1],
 						room_id: data.room_id,
-					});
+					}
+
+					// Start the chat.
+					chat.in(data.room_id).emit('start_chat', data);
+					writeLogObject(data)
 				} 
 			} 
 
@@ -81,6 +89,14 @@ module.exports = function(app,io){
 					room_has_too_many: true,
 				});
 			}
+		});
+
+		// Broadcast face-display changes.
+		socket.on('face_change', function(data) {
+			socket.broadcast.to(socket.room_id).emit('face_change',data);
+			socket.emit('face_change',data);
+			data['type'] = 'face_change';
+			writeLogObject(data);
 		});
 
 		// Somebody left the chat
@@ -94,12 +110,16 @@ module.exports = function(app,io){
 		socket.on('msg', function(data){
 			// When the server receives a message, it sends it to the other person in the room.
 			socket.broadcast.to(socket.room_id).emit('receive', {msg: data.msg, username: data.username});
+			data['type'] = 'message';
+			writeLogObject(data);
 		});
 	});
 };
 
 // TODO: Make sure logs are separated by chat room. 
 function writeLogObject(obj) {
-
+	var now = (new Date).toUTCString();
+	obj['timestamp'] = now;
+	console.log(obj);
 }
 

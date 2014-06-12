@@ -13,16 +13,33 @@ $(function(){
   var is_host;
   var controls_allowed;
 
-  // Cache some jQuery objects.
-  var host_form = $('#host-form');
-  var host_name = $('#host-name');
+  // The "What's your name?" login form shown to the host.
+  var host_form = $('form#host-form');
+
+  // The input field on the host's login form.
+  var host_name = $('input#host-name');
+
+  // The checkbox field on the host's login form.
   var allow_face_controls = $('#allow-face-controls');
+
+  // The "What's your name?" login form shown to the client.
   var client_form = $('#client-form');
+
+  // The input field on the client's login form.
   var client_name = $('#client-name');
-  var client_face = $('#client-face');
+
+  // The area which displays the client's selected image if they have those controls.
+  var client_face = $('div#client-face');
+
+  // The area which displays the 6 face control buttons if the user has those controls.
   var face_controls = $('#face-controls');
-  var chat_field = $('#chat-field');
-  var chat_form = $('#chat-form');
+
+  // The input field for sending a chat message.
+  var chat_field = $('input#chat-field');
+
+  // The form for sending a chat message.
+  var chat_form = $('form#chat-form');
+
   var start_new_chat = $('#start-new-chat');
   var invite_link = $("#invite-link");
   var invite_to_chat = $('#invite-to-chat');
@@ -108,8 +125,13 @@ $(function(){
 
       if (is_host || controls_allowed) {
         face_controls.show();
-        // TODO: Function for each face control.
-        // WITH THE IDs YOU JUST GAVE THE BUTTONS
+        face_controls.find('button').click(function(event) {
+          var id = $(this).attr('id');
+          socket.emit('face_change', {
+            id: id,
+            is_host: is_host
+          });
+        });
       }
 
       if (controls_allowed) {
@@ -131,6 +153,12 @@ $(function(){
       }
     }
   })
+
+  socket.on('face_change', function(data) {
+    var face_img = $(data.is_host ? 'img#host-face-img' : 'img#client-face-img');
+    var new_src = '../img/' + data.id + '.jpg';
+    face_img.attr('src', new_src);
+  });
 
   socket.on('leave',function(data){
     // TODO: Something?
