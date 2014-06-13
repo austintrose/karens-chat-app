@@ -72,7 +72,7 @@ module.exports = function(app,io){
 					usernames.push(chat.clients(data.room_id)[1].username);
 
 					var data = {
-						type: 'start_chat',
+						event_type: 'start_chat',
 						host: usernames[0],
 						client: usernames[1],
 						room_id: data.room_id,
@@ -95,7 +95,8 @@ module.exports = function(app,io){
 		socket.on('face_change', function(data) {
 			socket.broadcast.to(socket.room_id).emit('face_change',data);
 			socket.emit('face_change',data);
-			data['type'] = 'face_change';
+
+			data['event_type'] = 'face_change';
 			writeLogObject(data);
 		});
 
@@ -110,7 +111,7 @@ module.exports = function(app,io){
 		socket.on('msg', function(data){
 			// When the server receives a message, it sends it to the other person in the room.
 			socket.broadcast.to(socket.room_id).emit('receive', {msg: data.msg, username: data.username});
-			data['type'] = 'message';
+			data['event_type'] = 'message';
 			writeLogObject(data);
 		});
 	});
